@@ -1,6 +1,7 @@
 rightwristX = "";
 rightwristY = "";
 rightwristSCORE = "";
+game_status = "";
 /*created by prashant shukla */
 
 var paddle2 =10,paddle1=10;
@@ -39,7 +40,7 @@ function gotPoses(results){
     rightwristX = results[0].pose.rightWrist.x;
     rightwristY = results[0].pose.rightWrist.y;
     rightwristSCORE = results[0].pose.keypoints[10].score;
-    console.log("rightwristX = "+rightwristX+" ,rightwristY = "+rightwristY+" ,rightwristSCORE = "+rightwristSCORE);
+    console.log(rightwristSCORE);
   }
 }
 
@@ -48,51 +49,59 @@ function modelLoaded()
   console.log('Model Loaded!');
 }
 
+function startGame()
+{
+  game_status = "start";
+  document.getElementById("status").innerHTML = "Game Is Loaded";
+}
+
 function draw(){
-
- background(0); 
- image(video,0,0,700,600);
-
- fill("black");
- stroke("black");
- rect(680,0,20,700);
-
- fill("black");
- stroke("black");
- rect(0,0,20,700);
+if(game_status == "start")
+{
+  background(0); 
+  image(video,0,0,700,600);
  
-   //funtion paddleInCanvas call 
-   paddleInCanvas();
+  fill("black");
+  stroke("black");
+  rect(680,0,20,700);
  
-   //left paddle
-   fill(250,0,0);
-    stroke(0,0,250);
-    strokeWeight(0.5);
-   paddle1Y = mouseY; 
-   rect(paddle1X,paddle1Y,paddle1,paddle1Height,100);
-   
-   
-    //pc computer paddle
-    fill("#FFA500");
-    stroke("#FFA500");
-   var paddle2y =ball.y-paddle2Height/2;  rect(paddle2Y,paddle2y,paddle2,paddle2Height,100);
+  fill("black");
+  stroke("black");
+  rect(0,0,20,700);
+  
+    //funtion paddleInCanvas call 
+    paddleInCanvas();
+  
+    //left paddle
+    fill(250,0,0);
+     stroke(0,0,250);
+     strokeWeight(0.5);
+    paddle1Y = rightwristY; 
+    rect(paddle1X,paddle1Y,paddle1,paddle1Height,100);
     
-    //function midline call
-    midline();
     
-    //funtion drawScore call 
-   drawScore();
-   
-   //function models call  
-   models();
-   
-   //function move call which in very important
-    move();
-    if(rightwristSCORE > 0.2){
-      fill("gold");
-      stroke("gold");
-      circle(rightwristX,rightwristY,20);
-    }
+     //pc computer paddle
+     fill("#FFA500");
+     stroke("#FFA500");
+    var paddle2y =ball.y-paddle2Height/2;  rect(paddle2Y,paddle2y,paddle2,paddle2Height,100);
+     
+     //function midline call
+     midline();
+     
+     //funtion drawScore call 
+    drawScore();
+    
+    //function models call  
+    models();
+    
+    //function move call which in very important
+     move();
+     if(rightwristSCORE > 0.2){
+       fill("aqua");
+       stroke("gold");
+       circle(rightwristX,rightwristY,20);
+     }
+} 
 }
 
 
@@ -183,10 +192,10 @@ function models(){
 
 //this function help to not go te paddle out of canvas
 function paddleInCanvas(){
-  if(mouseY+paddle1Height > height){
-    mouseY=height-paddle1Height;
+  if(paddle1Y+paddle1Height > height){
+    paddle1Y=height-paddle1Height;
   }
-  if(mouseY < 0){
-    mouseY =0;
-  }  
+  if(paddle1Y < 0){
+    paddle1Y =0;
+  }
 }
